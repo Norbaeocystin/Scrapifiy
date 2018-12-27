@@ -59,6 +59,7 @@ class Scraper:
 			proxies: <dict>, example: proxies: {'http': 'http://10.10.1.10:3128','https': 'http://10.10.1.10:1080'}
 		'''
 		text = self.__get(url, proxies = proxies).text
+		#it creates attribute soup with BeautifulSoup object stored in the variable
 		self.soup = self.__soupify(text)
 		return self.soup
 					   
