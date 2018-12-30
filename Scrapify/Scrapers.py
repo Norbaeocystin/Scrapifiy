@@ -23,7 +23,7 @@ class Scraper:
 			url: <string>, example: 'https://github.com/Norbaeocystin'
 			proxies: <dict>, example: proxies: {'http': 'http://10.10.1.10:3128','https': 'http://10.10.1.10:1080'}
 		'''
-		self.HEADER = {'User-Agent': random.choice(user_agents_list)
+		self.HEADER = {'User-Agent': random.choice(user_agents_list)}
 		if proxies:
 			r = requests.get(url, proxies = proxies, headers = self.HEADER)
 			return r
