@@ -40,7 +40,7 @@ class Scraper:
 		'''
 		return BeautifulSoup(text, 'lxml')
 	
-	def get_text(self, url, proxies = {})
+	def get_text(self, url, proxies = {}):
 		'''
 		return text content of GET request as string ( html_content)
 		
