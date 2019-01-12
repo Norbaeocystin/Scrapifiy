@@ -122,7 +122,7 @@ class Scraper:
         if contact_emails:
             emails.extend(contact_emails)
         if emails:
-            return list({item for item in emails if item.rsplit('.',1)[1] in ['gif','jpg','png']})
+            return list({item for item in emails if not item.rsplit('.',1)[1] in ['gif','jpg','png']})
         else: 
             None
     
