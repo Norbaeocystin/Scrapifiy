@@ -112,9 +112,9 @@ class Scraper:
         return self.data
     
     def get_emails(self, url):
-		'''
-		scrap emails from url and from contact website
-		'''
+	'''
+	scrap emails from url and from contact website
+	'''
         soup = self.get_soup(url)
         #emails = list(set(re.findall(email_pattern, str(soup))))
         emails = list(set(re.findall(email_pattern, soup.text)))
@@ -122,20 +122,20 @@ class Scraper:
         if contact_emails:
             emails.extend(contact_emails)
         if emails:
-            return list(set(emails))
+            return list({item for item in emails if emails.rsplit('.',1)[1] in ['gif','jpg','png']})
         else: 
             None
     
     def get_contact(self, soup):
-		'''
-		will try to find contact website, in most languages is contact, kontakt or kontakta or similar 
-		that is reason why is it filtering by list comprehension, btw this can be done in beautiful soup
-		by 
-		contact = re.compile('onta')
-		soup.find('a', {'href': contact})
-		'''
+	'''
+	will try to find contact website, in most languages is contact, kontakt or kontakta or similar 
+	that is reason why is it filtering by list comprehension, btw this can be done in beautiful soup
+	by 
+	contact = re.compile('onta')
+	soup.find('a', {'href': contact})
+	'''
         links = soup.findAll('a')
-        return list({item['href'] for item in links if 'onta' in item.text.lower()})
+        return list({item['href'] for item in links if 'onta' in item.text.lower() and not 'mailto:' in item['href']})
     
     def get_emails_from_contact(self, url, soup):
 		'''
