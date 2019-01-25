@@ -38,7 +38,7 @@ class VeterinaryScraper(Scraper):
             result.append(data)
         return result
         
-CON = MongoClient('192.168.100.4')
+CON = MongoClient('localhost')
 collection = CON['Scraping']['Veterinary3']
 '''
 scraper = VeterinaryScraper()
