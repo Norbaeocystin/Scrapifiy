@@ -314,3 +314,37 @@ class Wayback:
             if i == 2014 and not links:
                 break
         return links
+
+PATTERN = r"\"?([-a-zA-Z0-9.`?{}]+@\w+[\.\w+]+)\"?"
+EMAILFINDER = re.compile(PATTERN)
+
+class EmailScraper(Scraper):
+    
+    def get_emails(self, url):
+        soup = self.get_soup(url)
+        a = soup.findAll('a')
+        a = [item for item in a if item.get('href')]
+        emails = re.findall(EMAILFINDER, str(soup))
+        contact = self.find_contact_webpage(soup)
+        if contact:
+            u = contact[0]
+            if not 'http' in u and u[0] == '/':
+                u = url + u
+            if not 'http' in u and u[0] != '/':
+                u = url + '/' + u
+            soup = self.get_soup(u)
+            a = soup.findAll('a')
+            a = [item for item in a if item.get('href')]
+            emails2 = re.findall(EMAILFINDER, str(soup))
+            emails.extend(emails2)
+        [item.replace('mailto:','') for item in emails]
+        return list(set(emails))
+    
+    def find_contact_webpage(self, soup):
+        '''
+        in soup object try to find hyperlink for contact
+	for most languages it will be something like
+	kontakt, contact and so on
+        '''
+        links = soup.findAll('a')
+        return list({item['href'] for item in links if 'onta' in item.text.lower()})
