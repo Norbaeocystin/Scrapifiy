@@ -319,7 +319,11 @@ PATTERN = r"\"?([-a-zA-Z0-9.`?{}]+@\w+[\.\w+]+)\"?"
 EMAILFINDER = re.compile(PATTERN)
 
 class EmailScraper(Scraper):
-    
+    '''
+    this will try to scrap emails, of course there is some balast and it needs to be improved:
+    remove .png, .gif
+    replace NOSPM and so on
+    '''
     def get_emails(self, url):
         soup = self.get_soup(url)
         a = soup.findAll('a')
