@@ -342,6 +342,18 @@ class EmailScraper(Scraper):
             emails2 = re.findall(EMAILFINDER, str(soup))
             emails.extend(emails2)
         [item.replace('mailto:','') for item in emails]
+        if emails:
+            emails = [item for item in emails if '.' in item]
+        if emails:
+            emails = [item for item in emails if not item.split('.')[-1] in FILTER]   
+        if emails:
+            emails = [item for item in emails if not '}' in item]  
+        if emails:
+            emails = [item for item in emails if not '{' in item]  
+        if emails:
+            emails = [item for item in emails if not 'example' in item]
+        if emails:
+            emails = [item.replace('NOSPM','') for item in emails]
         return list(set(emails))
     
     def find_contact_webpage(self, soup):
