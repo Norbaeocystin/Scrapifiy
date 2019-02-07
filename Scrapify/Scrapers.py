@@ -144,6 +144,7 @@ class Scraper:
 
         es = EmailScraper()
         data = collection.find({'Website':{'$regex':'www'}},{'Website'})
+	data = list(data)
         data = data[2200:]
 
         def get_data(item):
