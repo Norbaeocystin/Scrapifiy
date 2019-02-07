@@ -5,39 +5,6 @@ version: 1.0.1
 '''
 from bs4 import BeautifulSoup
 import random
-import re
-import requests
-from selenium import webdriver
-from selenium.common.exceptions import TimeoutException
-from urllib.parse import urljoin
-
-from user_agents import user_agents_list
-
-#this still can scrap also some .png, jpeg and so on, needs to be filtered
-email_pattern = re.compile(r"\"?([-a-zA-Z0-9.`?{}]+@\w+\.\w+)\"?" )
-
-class Scraper:
-    '''
-    Class which use requests library to scrap data
-    '''
-    def __init__(self):
-        self.data = []
-        self.urls = []
-        self.soup_objects = []
-    
-    def __get(self, url, proxies = {}):
-        '''
-        return get request
-        
-        args:
-            url: <string>, example: 'https://github.com/Norbaeocystin'
-            proxies: <dict>, example: proxies: {'http': 'http://10.10.1.10:3128','https': 'http://10.10.1.10:1080'}
-        '''
-        self.HEADER = {'User-Agent': random.choice(user_agents_list)}
-        if proxies:
-            r = requests.get(url, proxies = proxies, headers = self.HEADER)
-            return rfrom bs4 import BeautifulSoup
-import random
 import requests
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
