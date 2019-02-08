@@ -134,7 +134,6 @@ class Scraper:
         args:
             urls: <list>, example: ['https://github.com/Norbaeocystin']
             function: <function>, example: self.get_data
-        '''  
         Example:
         from requests.exceptions import ConnectionError, ContentDecodingError, ReadTimeout, InvalidURL, TooManyRedirects
         from pymongo import MongoClient
@@ -146,7 +145,7 @@ class Scraper:
         data = collection.find({'Website':{'$regex':'www'}},{'Website'})
 	data = list(data)
         data = data[2200:]
-
+        '''
         def get_data(item):
             try:
                 web = 'http://' + item['Website'].replace(' ', '')
