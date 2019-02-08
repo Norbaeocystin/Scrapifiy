@@ -1,2 +1,2 @@
 from .Scrapers import *
-import .user_agents
+import user_agents
