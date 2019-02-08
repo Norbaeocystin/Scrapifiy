@@ -10,6 +10,7 @@ from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
 from concurrent.futures import ThreadPoolExecutor
 import os
+import re
 #from queue import Queue
 
 from .user_agents import user_agents_list
