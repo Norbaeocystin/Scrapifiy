@@ -1,7 +1,7 @@
 '''
 date: January 2019
 purpose: classes to help with scraping tasks
-version: 1.0.1
+version: 1.0.9
 '''
 from bs4 import BeautifulSoup
 import random
