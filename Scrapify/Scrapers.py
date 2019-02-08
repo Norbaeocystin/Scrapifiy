@@ -145,7 +145,6 @@ class Scraper:
         data = collection.find({'Website':{'$regex':'www'}},{'Website'})
 	data = list(data)
         data = data[2200:]
-        '''
         def get_data(item):
             try:
                 web = 'http://' + item['Website'].replace(' ', '')
@@ -168,28 +167,7 @@ class Scraper:
             executor.map(function, urls)
             #for item in executor.map(function, urls):
              #   data.update(item)
-                   
-
-        args:
-            url: <string>, example 'https://www.oglaf.com/'
-            since: <int>, example 2005, it needs to be lower than since
-            until: <int>, example 2018, it needs to be higher than until
-        '''
-        links = []
-        for i in range(until,since, -1):
-            self.open_url(year = i, web = web)
-            time.sleep(3)
-            urls = self.get_urls()
-            if urls:
-                links.extend(urls)
-            if i == 2014 and not links:
-                break
-        return links
-
-        else:
-            r = requests.get(url, headers = self.HEADER)
-            return r
-                       
+    
     def __soupify(self, text):
         '''
         return BeautifulSoup object
