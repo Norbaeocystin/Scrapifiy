@@ -528,7 +528,7 @@ class Wayback:
                 break
         return links
 
-PATTERN = r"\"?([-a-zA-Z0-9.`?{}]+@\w+[\.\w+]+)\"?"
+PATTERN = r"\"?([-a-zA-Z0-9.`?{}]+@[-a-zA-Z0-9.`?{}]+[\.\w+]+)\"?"
 EMAILFINDER = re.compile(PATTERN)
 FILTER = ['png', 'jpg', 'jpeg', 'gif']
 
