@@ -347,7 +347,7 @@ class EmailScraper(Scraper):
         if emails:
             emails = [item for item in emails if '.' in item]
         if emails:
-            emails = [item for item in emails if not item.split('.')[-1] in FILTER]   
+            emails = [item for item in emails if not item.split('.')[-1].lower() in FILTER]   
         if emails:
             emails = [item for item in emails if not '}' in item]  
         if emails:
