@@ -316,7 +316,7 @@ class Wayback:
 
 PATTERN = r"\"?([-a-zA-Z0-9.`?{}]+@[-a-zA-Z0-9.`?{}]+[\.\w+]+)\"?"
 EMAILFINDER = re.compile(PATTERN)
-FILTER  = ['png', 'jpg', 'jpeg', 'gif', 'jpg?v', 'png?v']
+FILTER  = ['png', 'jpg', 'jpeg', '@gif', '@lg.x', '@md.x', '@sm.x]
 #regex to find some crap in from abc@abc
 to_be_corrected =  '/@[A-Za-z]+$/'
 
@@ -348,7 +348,7 @@ class EmailScraper(Scraper):
         if emails:
             emails = [item for item in emails if '.' in item]
         if emails:
-            emails = [item for item in emails if not item.split('.')[-1].lower() in FILTER]   
+            emails = [item for item in emails if not re.search('|'.join(FILTER), item, re.IGNORECASE)]   
         if emails:
             emails = [item for item in emails if not '}' in item]  
         if emails:
