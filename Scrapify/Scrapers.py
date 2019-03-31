@@ -316,8 +316,8 @@ class Wayback:
 
 PATTERN = r"\"?([-a-zA-Z0-9.`?{}]+@[-a-zA-Z0-9.`?{}]+[\.\w+]+)\"?"
 EMAILFINDER = re.compile(PATTERN)
-FILTER  = ['png', 'jpg', 'jpeg', '@gif', '@lg.x', '@md.x', '@sm.x', 'fontSize', '\d[.]\d', 
-	   '\dpx', 'textAligncenter', 'marginTop', 'name@']
+FILTER  = ['png', 'jpg', 'jpeg', '@gif', '@lg.x', '@md.x', '@sm.x', 'fontSize', '\d[.]\d', 'your@', 'a-zA-Z0-9'
+           '\dpx', 'textAligncenter', 'marginTop', 'name@', 'wixpress.com','@yourname', 'xs-only.x', 'com.avon.gi.rep.core.resman.vprov.ObjProvApplicationResource']
 #regex to find some crap in from abc@abc
 to_be_corrected =  '/@[A-Za-z]+$/'
 
