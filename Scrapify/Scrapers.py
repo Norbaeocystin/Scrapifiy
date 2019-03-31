@@ -1,7 +1,7 @@
 '''
 date: January 2019
 purpose: classes to help with scraping tasks
-version: 1.1.0
+version: 1.1.1
 '''
 from bs4 import BeautifulSoup
 import random
@@ -316,7 +316,8 @@ class Wayback:
 
 PATTERN = r"\"?([-a-zA-Z0-9.`?{}]+@[-a-zA-Z0-9.`?{}]+[\.\w+]+)\"?"
 EMAILFINDER = re.compile(PATTERN)
-FILTER  = ['png', 'jpg', 'jpeg', '@gif', '@lg.x', '@md.x', '@sm.x', 'fontSize', '\d[.]\d', '\dpx', 'textAligncenter', 'marginTop']
+FILTER  = ['png', 'jpg', 'jpeg', '@gif', '@lg.x', '@md.x', '@sm.x', 'fontSize', '\d[.]\d', 
+	   '\dpx', 'textAligncenter', 'marginTop', 'name@']
 #regex to find some crap in from abc@abc
 to_be_corrected =  '/@[A-Za-z]+$/'
 
