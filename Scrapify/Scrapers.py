@@ -131,6 +131,7 @@ class Scraper:
     
     def map_urls(self, urls, function):
         '''
+	also possibility to improve it to higher level with asyncio and aiohttp
         apply function over list of urls
         
         args:
