@@ -13,7 +13,7 @@ import os
 import re
 #from queue import Queue
 
-from .user_agents import user_agents_list
+from user_agents import user_agents_list
 
 class Scraper:
     '''
@@ -23,8 +23,8 @@ class Scraper:
         self.data = []
         self.urls = []
         self.soup_objects = []
-	    self.timeout = timeout
-	    # self.driver = webdriver.Chrome()
+        self.timeout = timeout
+        # self.driver = webdriver.Chrome()
         self.driver = False
         if driver:
             self.driver = driver
