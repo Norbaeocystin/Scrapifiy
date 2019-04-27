@@ -13,7 +13,7 @@ import os
 import re
 #from queue import Queue
 
-from user_agents import user_agents_list
+from .user_agents import user_agents_list
 
 class Scraper:
     '''
