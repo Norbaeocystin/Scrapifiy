@@ -23,8 +23,8 @@ class Scraper:
         self.data = []
         self.urls = []
         self.soup_objects = []
-	self.timeout = timeout
-	# self.driver = webdriver.Chrome()
+	    self.timeout = timeout
+	    # self.driver = webdriver.Chrome()
         self.driver = False
         if driver:
             self.driver = driver
