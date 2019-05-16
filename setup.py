@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 setuptools.setup(
     name="scrapify",
     install_requires=["pymongo","requests","bs4","selenium"],
-    version="1.1.1",
+    version="1.1.2",
     author="Rastislav_Baran",
     author_email="baranrastislav@gmail.com",
     description="Python classes to help with scraping data from internet ",
