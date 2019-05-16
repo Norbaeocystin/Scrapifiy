@@ -285,15 +285,17 @@ class Wayback:
         '''
         self.driver.close()
         
-    def get_urls(self):
+    def get_urls(self, year, url):
         '''
         returns found captures on webarchive
         '''
-        captures = self.driver.find_elements_by_class_name('captures')
-        if captures:
-            return [item.find_element_by_tag_name('a').get_attribute('href') for item in captures]
+        soup = BeautifulSoup(self.driver.page_source)
+        pattern = re.compile('web/' + str(year) +  '\d{1,}/' + url)
+        links = soup.findAll('a',{"href":pattern})
+        if links:
+            return ['https://web.archive.org' + item['href'] for item in links]
         else:
-            return []
+            []
     
     def scan(self, url = 'https://www.oglaf.com/', since = 2005, until = 2019):
         '''
@@ -308,11 +310,9 @@ class Wayback:
         for i in range(until,since, -1):
             self.open_url(year = i, url = url)
             time.sleep(3)
-            urls = self.get_urls()
+            urls = self.get_urls(i, url)
             if urls:
                 links.extend(urls)
-            if i == 2014 and not links:
-                break
         return links
 
 
