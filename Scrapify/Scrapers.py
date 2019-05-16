@@ -11,6 +11,7 @@ from selenium.common.exceptions import TimeoutException
 from concurrent.futures import ThreadPoolExecutor
 import os
 import re
+import time
 #from queue import Queue
 
 from .user_agents import user_agents_list
