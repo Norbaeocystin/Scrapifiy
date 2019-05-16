@@ -270,7 +270,7 @@ class Wayback:
             year: <int>: example 2018
             url: <string>: 'https://www.oglaf.com/'
         '''
-        self.driver.get(self.url.format(year, web))
+        self.driver.get(self.url.format(year, url))
         
     def get_text(self):
         '''
