@@ -305,7 +305,7 @@ class Wayback:
         '''
         links = []
         for i in range(until,since, -1):
-            self.open_url(year = i, web = url)
+            self.open_url(year = i, url = url)
             time.sleep(3)
             urls = self.get_urls()
             if urls:
