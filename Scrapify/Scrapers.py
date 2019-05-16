@@ -1,7 +1,7 @@
 '''
 date: January 2019
 purpose: classes to help with scraping tasks
-version: 1.1.1
+version: 1.1.2
 '''
 from bs4 import BeautifulSoup
 import random
@@ -294,7 +294,7 @@ class Wayback:
         else:
             return []
     
-    def scan(self, url = 'https://www.oglaf.com/', since = 2005, until = 2018):
+    def scan(self, url = 'https://www.oglaf.com/', since = 2005, until = 2019):
         '''
         returns archive webs for url from since to until, it goes from until to since, if there are no points to 2014, it stops
         
@@ -305,7 +305,7 @@ class Wayback:
         '''
         links = []
         for i in range(until,since, -1):
-            self.open_url(year = i, web = web)
+            self.open_url(year = i, web = url)
             time.sleep(3)
             urls = self.get_urls()
             if urls:
