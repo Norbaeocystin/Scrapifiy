@@ -20,10 +20,11 @@ class Scraper:
     '''
     Class which use requests library to scrap data
     '''
-    def __init__(self, driver = False, timeout = 4):
+    def __init__(self, driver = False, timeout = 4, verify = False):
         self.data = []
         self.urls = []
         self.soup_objects = []
+	self.verify = verify
         self.timeout = timeout
         # self.driver = webdriver.Chrome()
         self.driver = False
@@ -41,10 +42,10 @@ class Scraper:
         self.HEADER = {'User-Agent': random.choice(user_agents_list)}
         if not self.driver:
             if proxies:
-                r = requests.get(url, proxies = proxies, headers = self.HEADER, timeout = self.timeout)
+                r = requests.get(url, proxies = proxies, headers = self.HEADER, timeout = self.timeout, verify = self.verify)
                 return r
             else:
-                r = requests.get(url, headers = self.HEADER, timeout = self.timeout)
+                r = requests.get(url, headers = self.HEADER, timeout = self.timeout, verify = self.verify)
                 return r
         else:
             return driver.get(url).page_source
