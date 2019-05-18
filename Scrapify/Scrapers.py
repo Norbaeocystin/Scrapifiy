@@ -1,7 +1,7 @@
 '''
 date: January 2019
 purpose: classes to help with scraping tasks
-version: 1.1.2
+version: 1.1.3
 '''
 from bs4 import BeautifulSoup
 import random
@@ -369,5 +369,5 @@ class EmailScraper(Scraper):
 	for most languages it will be something like
 	kontakt, contact and so on
         '''
-        links = soup.findAll('a')
+        links = soup.findAll('a', {"href":re.compile('[a-zA-Z]')})
         return list({item['href'] for item in links if 'onta' in item.text.lower()})
