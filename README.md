@@ -6,7 +6,7 @@ pip3 install git+https://github.com/Norbaeocystin/Scrapify.git
 
 Usage:
 ```
-from Scrapify import Scraper
+from scrapify import Scraper
 
 class MyScraper(Scraper):
   
