@@ -97,9 +97,9 @@ class Scraper:
             proxies: <dict>, example: proxies: {'http': 'http://10.10.1.10:3128','https': 'http://10.10.1.10:1080'}
         '''
         soup = self.get_soup(url, proxies = {})
-	    for script in soup.findAll('script')
+        for script in soup.findAll('script'):
             script.decompose()
-	    for style in soup.findAll('style')
+        for style in soup.findAll('style'):
             style.decompose()
         return soup.text
 
