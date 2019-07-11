@@ -1,7 +1,7 @@
 '''
 date: January 2019
 purpose: classes to help with scraping tasks
-version: 1.1.3
+version: 1.1.4
 '''
 from bs4 import BeautifulSoup
 import random
@@ -87,6 +87,21 @@ class Scraper:
         #it creates attribute soup with BeautifulSoup object stored in the variable
         self.soup = self.__soupify(text)
         return self.soup
+
+    def get_clean_text(self, url, proxies = {}):
+        '''
+        return text from html content of GET request
+        
+        args:
+            url: <string>, example: 'https://github.com/Norbaeocystin'
+            proxies: <dict>, example: proxies: {'http': 'http://10.10.1.10:3128','https': 'http://10.10.1.10:1080'}
+        '''
+        soup = self.get_soup(url, proxies = {})
+	for script in soup.findAll('script')
+            script.decompose()
+	for style in soup.findAll('style')
+            style.decompose()
+        return soup.text
     
     def get_from_tag(self, tag_soup_object, dict_identificators):
         '''
