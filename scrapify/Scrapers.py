@@ -88,15 +88,13 @@ class Scraper:
         self.soup = self.__soupify(text)
         return self.soup
 
-    def get_clean_text(self, url, proxies = {}):
+    def get_clean_text(self, soup):
         '''
         return text from html content of GET request
 
         args:
-            url: <string>, example: 'https://github.com/Norbaeocystin'
-            proxies: <dict>, example: proxies: {'http': 'http://10.10.1.10:3128','https': 'http://10.10.1.10:1080'}
+            soup: <BeautifulSoup object>
         '''
-        soup = self.get_soup(url, proxies = {})
         for script in soup.findAll('script'):
             script.decompose()
         for style in soup.findAll('style'):
