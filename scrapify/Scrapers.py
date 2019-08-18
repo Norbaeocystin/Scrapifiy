@@ -1,7 +1,7 @@
 '''
 date: January 2019
 purpose: classes to help with scraping tasks
-version: 1.1.4
+version: 1.1.5
 '''
 from bs4 import BeautifulSoup
 import random
@@ -375,7 +375,7 @@ class EmailScraper(Scraper):
             emails = [item for item in emails if not 'example' in item]
         if emails:
             emails = [item.replace('NOSPM','') for item in emails]
-        return list(set(emails))
+        return list(set([email.split('?',1)[0] for email in emails]))
 
     def find_contact_webpage(self, soup):
         '''
