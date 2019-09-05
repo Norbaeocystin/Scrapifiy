@@ -333,8 +333,9 @@ class Wayback:
 PATTERN = r"\"?([-a-zA-Z0-9.`?{}]+@[-a-zA-Z0-9.`?{}]+[\.\w+]+)\"?"
 EMAILFINDER = re.compile(PATTERN)
 FILTER  = ['png', 'jpg', 'jpeg', '@gif', '@lg.x', '@md.x', '@sm.x', 'fontSize', '\d[.]\d', 'your@', 'mozilla',
-	   'javascript','\dpx', 'textAligncenter', 'marginTop', 'name@', 'wixpress.com','@yourname',
-	   'xs-only.x', 'com.avon.gi.rep.core.resman.vprov.ObjProvApplicationResource']
+	   'javascript','\dpx', 'textAligncenter', 'marginTop', 'name@', 'wixpress.com','yourname', 'example',
+	   'xs-only.x', 'com.avon.gi.rep.core.resman.vprov.ObjProvApplicationResource', 'template.', 'layout.', '.gif'
+	  ,'beeketing']
 #regex to find some crap in from abc@abc
 to_be_corrected =  '/@[A-Za-z]+$/'
 
@@ -372,7 +373,7 @@ class EmailScraper(Scraper):
         if emails:
             emails = [item for item in emails if not '{' in item]
         if emails:
-            emails = [item for item in emails if not 'example' in item]
+            emails = [item[:-1] if item[-1] =='.' else item for item in emails]
         if emails:
             emails = [item.replace('NOSPM','') for item in emails]
         return list(set([email.split('?',1)[0] for email in emails]))
