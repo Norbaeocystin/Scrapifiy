@@ -1,9 +1,10 @@
 '''
 date: January 2019
 purpose: classes to help with scraping tasks
-version: 1.1.5
+version: 1.1.6
 '''
 from bs4 import BeautifulSoup
+import difflib
 import random
 import requests
 from selenium import webdriver
@@ -12,9 +13,11 @@ from concurrent.futures import ThreadPoolExecutor
 import os
 import re
 import time
+import urllib3
+urllib3.disable_warnings()
 #from queue import Queue
 
-from .user_agents import user_agents_list
+from user_agents import user_agents_list
 
 class Scraper:
     '''
@@ -146,7 +149,7 @@ class Scraper:
 
     def map_urls(self, urls, function):
         '''
-	also possibility to improve it to higher level with asyncio and aiohttp
+        also possibility to improve it to higher level with asyncio and aiohttp
         apply function over list of urls
 
         args:
@@ -161,7 +164,7 @@ class Scraper:
 
         es = EmailScraper()
         data = collection.find({'Website':{'$regex':'www'}},{'Website'})
-	data = list(data)
+        data = list(data)
         data = data[2200:]
         def get_data(item):
             try:
@@ -186,68 +189,19 @@ class Scraper:
             #for item in executor.map(function, urls):
              #   data.update(item)
 
-    def __soupify(self, text):
+    def get_links(self, soup):
+        a = soup.findAll('a')
+        links = [item for item in a if item.get('href')]
+        return list(set(links))
+    
+    def find_contact_webpage(self, soup):
         '''
-        return BeautifulSoup object
-
-        args:
-            text: <string>, html_content
+        in soup object try to find hyperlink for contact
+        for most languages it will be something like
+        kontakt, contact and so on
         '''
-        return BeautifulSoup(text, 'lxml')
-
-    def get_text(self, url, proxies = {}):
-        '''
-        return text content of GET request as string ( html_content)
-
-        args:
-            url: <string>, example: 'https://github.com/Norbaeocystin'
-            proxies: <dict>, example: proxies: {'http': 'http://10.10.1.10:3128','https': 'http://10.10.1.10:1080'}
-        '''
-        return self.__get(url, proxies = proxies).text
-
-    def get_soup(self, url, proxies = {}):
-        '''
-        return BeautifulSoup object from html content of GET request
-
-        args:
-            url: <string>, example: 'https://github.com/Norbaeocystin'
-            proxies: <dict>, example: proxies: {'http': 'http://10.10.1.10:3128','https': 'http://10.10.1.10:1080'}
-        '''
-        text = self.__get(url, proxies = proxies).text
-        #it creates attribute soup with BeautifulSoup object stored in the variable
-        self.soup = self.__soupify(text)
-        return self.soup
-
-    def get_from_tag(self, tag_soup_object, dict_identificators):
-        '''
-        Example of usage
-        tags = {'Name':['h2',{'itemprop':'name'}], 'Street':['span',{'itemprop':'streetAddress'}],
-                'City':['span',{'itemprop':'addressLocality'}],
-                'Country':['span',{'itemprop':'addressCountry'}]}
-        self.get_from_tag(soup, tags)
-        >>>{'Name': '4leveldesign.com','Street': 'Branickiego 9L/25',City': '02-972, Warszawa','Country': 'Polen'}
-
-
-        args::
-            tag_soup_object:
-            dict_identificators:
-        '''
-        data = {}
-        for item in dict_identificators.keys():
-            try:
-                data[item] = tag_soup_object.find(*tags[item]).text
-            except AttributeError:
-                pass
-        return data
-
-    def get_data(self, soup_object):
-        '''
-        returns dict of values from BeautifulSoup object
-        need to write your own method to scrap data
-        args:
-            soup_object: <bs4.BeautifulSoup>
-        '''
-        return {}
+        links = soup.findAll('a', {"href":re.compile('[a-zA-Z]')})
+        return list({item['href'] for item in links if 'onta' in item.text.lower()})
 
 class Wayback:
     '''
@@ -333,9 +287,9 @@ class Wayback:
 PATTERN = r"\"?([-a-zA-Z0-9.`?{}]+@[-a-zA-Z0-9.`?{}]+[\.\w+]+)\"?"
 EMAILFINDER = re.compile(PATTERN)
 FILTER  = ['png', 'jpg', 'jpeg', '@gif', '@lg.x', '@md.x', '@sm.x', 'fontSize', '\d[.]\d', 'your@', 'mozilla',
-	   'javascript','\dpx', 'textAligncenter', 'marginTop', 'name@', 'wixpress.com','yourname', 'example',
-	   'xs-only.x', 'com.avon.gi.rep.core.resman.vprov.ObjProvApplicationResource', 'template.', 'layout.', '.gif'
-	  ,'beeketing']
+           'javascript','\dpx', 'textAligncenter', 'marginTop', 'name@', 'wixpress.com','yourname', 'example',
+           'xs-only.x', 'com.avon.gi.rep.core.resman.vprov.ObjProvApplicationResource', 'template.', 'layout.', '.gif'
+           ,'beeketing']
 #regex to find some crap in from abc@abc
 to_be_corrected =  '/@[A-Za-z]+$/'
 
@@ -378,11 +332,64 @@ class EmailScraper(Scraper):
             emails = [item.replace('NOSPM','') for item in emails]
         return list(set([email.split('?',1)[0] for email in emails]))
 
-    def find_contact_webpage(self, soup):
+SOCIALNETWORKS = ['facebook', 'youtube', 'instagram', 'twitter']
+SOCIALNETWORKSFILTER = ['adform', '/p/']
+    
+class SocialNetworksScraper(Scraper):
+    '''
+    this will try to find social network links for social networks defined in SOCIALNETWORKS
+    '''
+    
+    def apply_filter(self, x, filter_list = SOCIALNETWORKSFILTER ):
+        """
+        returns False if item in filter_list is in x else True
+        """
+        for item in filter_list:
+            if item in x:
+                return False
+        return True
+    
+    def get_the_most_similar(self, url, links):
         '''
-        in soup object try to find hyperlink for contact
-	for most languages it will be something like
-	kontakt, contact and so on
+        sometimes you can get more than one social network link, this function
+        will compute ratio of similarity between part of original url and choose 
+        the most similar link, it is based than for example company https://www.interflora.co.uk/ (just interflora is used in 
+        computing similarity score)
+        will be the most similar instagram account https://www.instagram.com/interflorauk/ not https://www.instagram.com/admob
         '''
-        links = soup.findAll('a', {"href":re.compile('[a-zA-Z]')})
-        return list({item['href'] for item in links if 'onta' in item.text.lower()})
+        name = url.replace('www.','').split('//')[-1].split('.')[0]
+        result = []
+        for idx, link in enumerate(links):
+            clean_link = link.replace('www.','').split('//')[-1].replace('user','').replace('/','')
+            res = difflib.SequenceMatcher(None, name, clean_link)
+            result.append((res.ratio(), idx))
+        return links[sorted(result)[-1][1]]
+          
+    def get_social_networks(self, url):
+        '''
+        return dictionary with social networks links ( if they exists on main or contact page)
+        returned Social Networks are defined in SOCIALNETWORKS list
+        '''
+        soup = self.get_soup(url)
+        links = self.get_links(soup)
+        contact = self.find_contact_webpage(soup)
+        if contact:
+            contact_url = contact[0]
+            if not 'http' in contact_url and contact_url[0] == '/':
+                contact_url = url + contact_url
+            if not 'http' in contact_url and contact_url[0] != '/':
+                contact_url = url + '/' + contact_url
+            soup = self.get_soup(contact_url)
+            links_2 = self.get_links(soup)
+            links.extend(links_2)
+        result = dict()
+        links = [link['href'] for link in links]
+        for social_network in SOCIALNETWORKS:
+            sn_links = set([item for item in links if social_network in item.rsplit('www.',1)[-1].split('.',1)[0]])
+            sn_links = list(filter(lambda x: self.apply_filter(x), sn_links))
+            if sn_links and len(sn_links) == 1:
+                result[social_network] = sn_links[0]
+            elif sn_links and len(sn_links) > 1:
+                most_similar_link = self.get_the_most_similar(url, sn_links)
+                result[social_network] = most_similar_link
+        return result
