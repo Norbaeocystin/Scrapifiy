@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="scrapify",
-    install_requires=["pymongo","requests","bs4","selenium", "lxml", "difflib"],
+    install_requires=["pymongo","requests","bs4","selenium", "lxml"],
     version="1.1.6",
     author="Rastislav_Baran",
     author_email="baranrastislav@gmail.com",
