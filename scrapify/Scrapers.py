@@ -332,7 +332,7 @@ class EmailScraper(Scraper):
             emails = [item.replace('NOSPM','') for item in emails]
         return list(set([email.split('?',1)[0] for email in emails]))
 
-SOCIALNETWORKS = ['facebook', 'youtube', 'instagram', 'twitter']
+SOCIALNETWORKS = ['facebook', 'youtube', 'instagram', 'twitter', 'linkedin']
 SOCIALNETWORKSFILTER = ['adform', '/p/']
     
 class SocialNetworksScraper(Scraper):
