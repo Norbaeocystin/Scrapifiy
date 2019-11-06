@@ -1,7 +1,7 @@
 '''
 date: January 2019
 purpose: classes to help with scraping tasks
-version: 1.1.6
+version: 1.1.7
 '''
 from bs4 import BeautifulSoup
 import difflib
@@ -18,6 +18,19 @@ urllib3.disable_warnings()
 #from queue import Queue
 
 from .user_agents import user_agents_list
+
+#social networks
+SOCIALNETWORKS = ['facebook', 'youtube', 'instagram', 'twitter', 'linkedin']
+SOCIALNETWORKSFILTER = ['adform', '/p/']
+#emails
+PATTERN = r"\"?([-a-zA-Z0-9.`?{}]+@[-a-zA-Z0-9.`?{}]+[\.\w+]+)\"?"
+EMAILFINDER = re.compile(PATTERN)
+FILTER  = ['png', 'jpg', 'jpeg', '@gif', '@lg.x', '@md.x', '@sm.x', 'fontSize', '\d[.]\d', 'your@', 'mozilla',
+           'javascript','\dpx', 'textAligncenter', 'marginTop', 'name@', 'wixpress.com','yourname', 'example',
+           'xs-only.x', 'com.avon.gi.rep.core.resman.vprov.ObjProvApplicationResource', 'template.', 'layout.', '.gif'
+           ,'beeketing']
+#regex to find some crap in from abc@abc
+to_be_corrected =  '/@[A-Za-z]+$/'
 
 class Scraper:
     '''
@@ -202,6 +215,56 @@ class Scraper:
         '''
         links = soup.findAll('a', {"href":re.compile('[a-zA-Z]')})
         return list({item['href'] for item in links if 'onta' in item.text.lower()})
+    
+    def get_emails_from_soup(self, soup_object):
+        '''
+        returns list of found emails from soup 
+        args:
+            soup_object: <bs4.BeautifulSoup>
+        returns:
+            list
+        '''
+        emails = re.findall(EMAILFINDER, str(soup_object))
+        [item.replace('mailto:','') for item in emails]
+        if emails:
+            emails = [item for item in emails if '.' in item]
+        if emails:
+            emails = [item for item in emails if not re.search('|'.join(FILTER), item, re.IGNORECASE)]
+        if emails:
+            emails = [item for item in emails if not '}' in item]
+        if emails:
+            emails = [item for item in emails if not '{' in item]
+        if emails:
+            emails = [item[:-1] if item[-1] =='.' else item for item in emails]
+        if emails:
+            emails = [item.replace('NOSPM','') for item in emails]
+        return list(set([email.split('?',1)[0] for email in emails]))
+    
+    def apply_filter(self, x, filter_list = SOCIALNETWORKSFILTER ):
+        """
+        returns False if item in filter_list is in x else True
+        """
+        for item in filter_list:
+            if item in x:
+                return False
+        return True
+    
+    def get_social_networks_from_soup(self, soup):
+        '''
+        returns list of dictfound social links
+        args:
+            soup_object: <bs4.BeautifulSoup>
+        returns:
+            dict
+        '''
+        links = self.get_links(soup)
+        result = dict()
+        links = [link['href'] for link in links]
+        for social_network in SOCIALNETWORKS:
+            sn_links = set([item for item in links if social_network in item.rsplit('www.',1)[-1].split('.',1)[0]])
+            sn_links = list(filter(lambda x: self.apply_filter(x), sn_links))
+            result[social_network] = sn_link
+        return result
 
 class Wayback:
     '''
@@ -283,17 +346,6 @@ class Wayback:
                 links.extend(urls)
         return links
 
-
-PATTERN = r"\"?([-a-zA-Z0-9.`?{}]+@[-a-zA-Z0-9.`?{}]+[\.\w+]+)\"?"
-EMAILFINDER = re.compile(PATTERN)
-FILTER  = ['png', 'jpg', 'jpeg', '@gif', '@lg.x', '@md.x', '@sm.x', 'fontSize', '\d[.]\d', 'your@', 'mozilla',
-           'javascript','\dpx', 'textAligncenter', 'marginTop', 'name@', 'wixpress.com','yourname', 'example',
-           'xs-only.x', 'com.avon.gi.rep.core.resman.vprov.ObjProvApplicationResource', 'template.', 'layout.', '.gif'
-           ,'beeketing']
-#regex to find some crap in from abc@abc
-to_be_corrected =  '/@[A-Za-z]+$/'
-
-
 class EmailScraper(Scraper):
     '''
     this will try to scrap emails, of course there is some balast and it needs to be improved:
@@ -331,9 +383,6 @@ class EmailScraper(Scraper):
         if emails:
             emails = [item.replace('NOSPM','') for item in emails]
         return list(set([email.split('?',1)[0] for email in emails]))
-
-SOCIALNETWORKS = ['facebook', 'youtube', 'instagram', 'twitter', 'linkedin']
-SOCIALNETWORKSFILTER = ['adform', '/p/']
     
 class SocialNetworksScraper(Scraper):
     '''
