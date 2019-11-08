@@ -17,8 +17,7 @@ import urllib3
 urllib3.disable_warnings()
 #from queue import Queue
 
-#from .user_agents import user_agents_list
-from user_agents import user_agents_list
+from .user_agents import user_agents_list
 
 #social networks
 SOCIALNETWORKS = ['facebook', 'youtube', 'instagram', 'twitter', 'linkedin']
