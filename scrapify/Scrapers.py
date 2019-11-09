@@ -251,7 +251,6 @@ class Scraper:
             urls: <list>, example: ['https://github.com/Norbaeocystin']
             function: <function>, example: self.get_data
         Example:
-        from requests.exceptions import ConnectionError, ContentDecodingError, ReadTimeout, InvalidURL, TooManyRedirects
         from pymongo import MongoClient
 
         CON = MongoClient('localhost')
@@ -267,8 +266,9 @@ class Scraper:
                 emails = es.get_emails(web)
                 if emails:
                     collection.update_one({"_id":item['_id']},{"$set":{'Emails':emails}})
-            except (ConnectionError, ContentDecodingError, ReadTimeout, InvalidURL,IndexError, TooManyRedirects):
-                pass
+            except (Exception, BaseException) as error:
+                error_name = error.__class__.__name__
+                print(error_name)
             ind = data.index(item)
             if ind % 100 == 0:
                 print(ind)
@@ -304,7 +304,7 @@ class Scraper:
         returns list of found emails from soup 
         args:
             soup_object: <bs4.BeautifulSoup>
-        returns:
+        returns:	
             list
         '''
         emails = re.findall(EMAILFINDER, str(soup_object))
