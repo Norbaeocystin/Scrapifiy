@@ -1,7 +1,7 @@
 '''
 date: January 2019
 purpose: classes to help with scraping tasks
-version: 1.1.8
+version: 1.1.9
 '''
 from bs4 import BeautifulSoup
 import difflib
@@ -26,7 +26,7 @@ SOCIALNETWORKSFILTER = ['adform', '/p/']
 PATTERN = r"\"?([-a-zA-Z0-9.`?{}]+@[-a-zA-Z0-9.`?{}]+[\.\w+]+)\"?"
 EMAILFINDER = re.compile(PATTERN)
 FILTER  = ['png', 'jpg', 'jpeg', '@gif', '@lg.x', '@md.x', '@sm.x', 'fontSize', '\d[.]\d', 'your@', 'mozilla',
-           'javascript','\dpx', 'textAligncenter', 'marginTop', 'name@', 'wixpress.com','yourname', 'example',
+           'javascript','\dpx', 'textAligncenter', 'marginTop', 'name@', 'wixpress.com','yourname', 'youraddress','example',
            'xs-only.x', 'com.avon.gi.rep.core.resman.vprov.ObjProvApplicationResource', 'template.', 'layout.', '.gif'
            ,'beeketing']
 #regex to find some crap in from abc@abc
