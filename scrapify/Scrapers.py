@@ -332,7 +332,7 @@ class Scraper:
                 return False
         return True
     
-    def get_social_networks_from_soup(self, soup):
+    def get_social_networks_from_soup(self, soup, url):
         '''
         returns list of dictfound social links
         args:
@@ -346,7 +346,11 @@ class Scraper:
         for social_network in SOCIALNETWORKS:
             sn_links = set([item for item in links if social_network in item.rsplit('www.',1)[-1].split('.',1)[0]])
             sn_links = list(filter(lambda x: self.apply_filter(x), sn_links))
-            result[social_network] = sn_link
+            if sn_links and len(sn_links) == 1:
+                result[social_network] = sn_links[0]
+            elif sn_links and len(sn_links) > 1:
+                most_similar_link = self.get_the_most_similar(url, sn_links)
+                result[social_network] = most_similar_link
         return result
     
     def get_the_most_similar(self, url, links):
